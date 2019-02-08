@@ -45,6 +45,32 @@ app.get('/test', function(req, res) {
   res.sendFile(path.join(__dirname, '/public/test.html'));
 });
 
+var ParseDashboard = require('parse-dashboard');
+var options = {
+  allowInsecureHTTP: true,
+  "useEncryptedPasswords": false
+};
+
+var dashboard = new ParseDashboard({
+  "apps": [
+    {
+      "serverURL": process.env.SERVER_URL,
+      "appId": process.env.APP_ID,
+      "masterKey": process.env.MASTER_KEY,
+      "appName": process.env.APP_ID
+    }
+  ],
+  users: [
+    {
+      "user": process.env.APP_ID,
+      "pass": process.env.MASTER_KEY
+    }
+  ]
+}, options);
+// make the Parse Dashboard available at /dashboard
+app.use('/dashboard', dashboard);
+
+
 var port = process.env.PORT || 1337;
 var httpServer = require('http').createServer(app);
 httpServer.listen(port, function() {
